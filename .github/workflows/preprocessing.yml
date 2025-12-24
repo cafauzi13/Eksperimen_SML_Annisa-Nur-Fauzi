@@ -1,0 +1,36 @@
+name: Automated Preprocessing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.7' # Sesuai rekomendasi environment
+
+    - name: Install dependencies
+      run: |
+        pip install pandas
+
+    - name: Run Preprocessing Script
+      run: |
+        python preprocessing/automate_Annisa-Nur-Fauzi.py
+
+    - name: Commit and Push processed data
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add preprocessing/titanic_preprocessing/titanic_clean.csv
+        git commit -m "Update processed dataset" || echo "No changes to commit"
+        git push
